@@ -1,0 +1,24 @@
+{
+  "name": "cw2",
+  "version": "1.0.0",
+  "description": "app",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sunnysubash12/CW2.git"
+  },
+  "author": "Sunny",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/sunnysubash12/CW2/issues"
+  },
+  "homepage": "https://github.com/sunnysubash12/CW2#readme",
+  "dependencies": {
+    "express": "^4.18.2",
+    "mongodb": "^6.3.0"
+  }
+}
