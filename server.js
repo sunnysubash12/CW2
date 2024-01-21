@@ -8,6 +8,7 @@ const db_name = "school_classes_db";
 const db_lesson_collection_name = "lessons";
 const db_order_collection_name = "orders";
 
+//testing aws pipeline
 
 const client = new MongoClient(uri);
 
