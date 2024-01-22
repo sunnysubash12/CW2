@@ -1,6 +1,8 @@
 const express = require("express");
 const app = express();
 const {MongoClient} = require("mongodb");
+const cors = require("cors")
+app.use(cors());
 
 const pass = "Facebook123--123";
 const uri = `mongodb+srv://sunnysubash:${pass}@cluster.cxcal2p.mongodb.net/?retryWrites=true&w=majority`;
