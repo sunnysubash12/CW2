@@ -7,7 +7,7 @@ const path = require("path");
 const { error } = require("console");
 const propertiesPath = path.resolve(__dirname, "conf/db.properties");
 const properties = propertiesReader(propertiesPath);
-app.use(cors());
+app.use(cors({origin:"*"}));
 app.use(express.json());
 
 let dbPprefix = properties.get("db.prefix");
