@@ -8,6 +8,7 @@ const { error } = require("console");
 const propertiesPath = path.resolve(__dirname, "conf/db.properties");
 const properties = propertiesReader(propertiesPath);
 app.use(cors());
+app.use(express.json());
 
 let dbPprefix = properties.get("db.prefix");
 //for potential special characters
@@ -23,22 +24,24 @@ const db_order_collection_name = "orders";
 
 const client = new MongoClient(uri, { serverApi: ServerApiVersion.v1 });
 
-const fetchLessons = async (req, res) => {
 
-    try {
-        await client.connect();
 
-        const db = client.db(db_name);
+const fetchLessons = async (req, res, next) => {
 
-        const lessons_collection = db.collection(db_lesson_collection_name);
+    await client.connect();
 
-        const fetchedLessons = await lessons_collection.find({}).toArray();
+    const db = client.db(db_name);
 
-        res.json(fetchedLessons);
+    const lessons_collection = db.collection(db_lesson_collection_name);
 
-    } catch (error) {
-        res.status(500).json({ message: error.message });
-    }
+    const fetchedLessons = await lessons_collection.find({}).toArray(function (err, results) {
+        if (err) {
+            return next(err);
+        }
+        res.send(results);
+    });
+    console.log("lessons data is fetched");
+    res.json(fetchedLessons);
 
 }
 
@@ -46,6 +49,7 @@ const fetchOrders = async (req, res, next) => {
 
     try {
         await client.connect();
+
 
         const db = client.db(db_name);
 
@@ -57,6 +61,7 @@ const fetchOrders = async (req, res, next) => {
             }
             res.send(results);
         });
+        console.log("order data is fetched");
 
         res.json(fetchedOrders);
 
@@ -65,11 +70,32 @@ const fetchOrders = async (req, res, next) => {
     }
 
 }
+const insertorders = async (req, res) => {
+    try {
+        await client.connect();
+
+        // Assuming req.body contains the data you want to insert
+        const OrdersToInsert = req.body;
+
+        if(!OrdersToInsert.full_name || !OrdersToInsert.phone_number || !OrdersToInsert.lessons){
+            return res.status(400).json({ message:"invalid order" });
+        }
+
+        const db = client.db(db_name);
+
+        const orders_collection = db.collection(db_order_collection_name);
+
+        const insertedOrders = await orders_collection.insertOne(OrdersToInsert);
+        console.log("orders data is inserted");
+        res.json(insertedOrders);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
 
 
-
-
-
+// Define your route for inserting a lesson
+app.post("/orders", insertorders);
 
 app.get("/lessons", fetchLessons);
 app.get("/orders", fetchOrders);
