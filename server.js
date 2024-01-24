@@ -4,10 +4,9 @@ const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 const cors = require("cors");
 const propertiesReader = require("properties-reader");
 const path = require("path");
-const { error } = require("console");
 const propertiesPath = path.resolve(__dirname, "conf/db.properties");
 const properties = propertiesReader(propertiesPath);
-app.use(cors({origin:"*"}));
+app.use(cors({ origin: "*" }));
 app.use(express.json());
 
 let dbPprefix = properties.get("db.prefix");
@@ -77,8 +76,8 @@ const insertorders = async (req, res) => {
         // Assuming req.body contains the data you want to insert
         const OrdersToInsert = req.body;
 
-        if(!OrdersToInsert.full_name || !OrdersToInsert.phone_number || !OrdersToInsert.lessons){
-            return res.status(400).json({ message:"invalid order" });
+        if (!OrdersToInsert.full_name || !OrdersToInsert.phone_number || !OrdersToInsert.lessons) {
+            return res.status(400).json({ message: "invalid order" });
         }
 
         const db = client.db(db_name);
@@ -93,10 +92,41 @@ const insertorders = async (req, res) => {
     }
 };
 
+const putLessonAvailability = async (req, res) => {
+    try {
+        await client.connect();
+        const lesson_id = req.params.id;
+
+        const { availability } = req.body;
+
+        const db = client.db(db_name);
+
+        const lessons_collection = db.collection(db_lesson_collection_name);
+
+        const lesson_result = await lessons_collection.updateOne(
+            {
+                _id: new ObjectId(lesson_id)
+            },
+            {
+                $set: { availability: availability }
+            }
+        );
+
+        if (lesson_result.matchedCount === 0) {
+            res.status(404).json({ error: "lesson not found" });
+        }else{
+            console.log("availability is updated");
+            res.status(200).json({ message: "availability is updated" });
+        }
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
 
 // Define your route for inserting a lesson
 app.post("/orders", insertorders);
-
+app.put("/lessons/:id",putLessonAvailability);
 app.get("/lessons", fetchLessons);
 app.get("/orders", fetchOrders);
 
