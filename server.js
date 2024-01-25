@@ -34,7 +34,6 @@ const fetchLessons = async (req, res) => {
     const lessons_collection = db.collection(db_lesson_collection_name);
 
     const fetchedLessons = await lessons_collection.find({}).toArray();
-    console.log("lessons data is fetched");
     res.json(fetchedLessons);
 
 }
@@ -50,7 +49,6 @@ const fetchOrders = async (req, res) => {
         const orders_collection = db.collection(db_order_collection_name);
 
         const fetchedOrders = await orders_collection.find({}).toArray();
-        console.log("order data is fetched");
 
         res.json(fetchedOrders);
 
@@ -75,7 +73,6 @@ const insertorders = async (req, res) => {
         const orders_collection = db.collection(db_order_collection_name);
 
         const insertedOrders = await orders_collection.insertOne(OrdersToInsert);
-        console.log("orders data is inserted");
         res.json(insertedOrders);
     } catch (error) {
         res.status(500).json({ message: error.message });
@@ -109,7 +106,6 @@ const putLessonAvailability = async (req, res) => {
         if (lesson_result.matchedCount === 0) {
             res.status(404).json({ error: "lesson not found" });
         }else{
-            console.log("availability is updated");
             res.status(200).json({ message: "availability is updated" });
         }
     } catch (error) {
@@ -120,7 +116,8 @@ const putLessonAvailability = async (req, res) => {
 app.use((req,res,next)=>{
     const { method, originalUrl, protocol } = req;
     const timestamp = new Date().toISOString();
-    console.log(`[${timestamp}] ${method} ${originalUrl} - ${protocol}://${req.get('host')}${req.originalUrl}]\n`); 
+    console.log(`[${timestamp}] ${method} ${originalUrl} - ${protocol}://${req.get('host')}${req.originalUrl}]\n`);
+    next(); 
 });
 
 
