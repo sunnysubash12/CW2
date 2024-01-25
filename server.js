@@ -93,7 +93,7 @@ const putLessonAvailability = async (req, res) => {
 
         const lessons_collection = db.collection(db_lesson_collection_name);
 
-        if (!availability.availability) {
+        if (!req.body.availability) {
             return res.status(400).json({ message: "invalid field" });
         }
 
