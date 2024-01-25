@@ -25,7 +25,7 @@ const client = new MongoClient(uri, { serverApi: ServerApiVersion.v1 });
 
 
 
-const fetchLessons = async (req, res, next) => {
+const fetchLessons = async (req, res) => {
 
     await client.connect();
 
@@ -33,18 +33,13 @@ const fetchLessons = async (req, res, next) => {
 
     const lessons_collection = db.collection(db_lesson_collection_name);
 
-    const fetchedLessons = await lessons_collection.find({}).toArray(function (err, results) {
-        if (err) {
-            return next(err);
-        }
-        res.send(results);
-    });
+    const fetchedLessons = await lessons_collection.find({}).toArray();
     console.log("lessons data is fetched");
     res.json(fetchedLessons);
 
 }
 
-const fetchOrders = async (req, res, next) => {
+const fetchOrders = async (req, res) => {
 
     try {
         await client.connect();
@@ -54,12 +49,7 @@ const fetchOrders = async (req, res, next) => {
 
         const orders_collection = db.collection(db_order_collection_name);
 
-        const fetchedOrders = await orders_collection.find({}).toArray(function (err, results) {
-            if (error) {
-                return next(err);
-            }
-            res.send(results);
-        });
+        const fetchedOrders = await orders_collection.find({}).toArray();
         console.log("order data is fetched");
 
         res.json(fetchedOrders);
@@ -76,7 +66,7 @@ const insertorders = async (req, res) => {
         // Assuming req.body contains the data you want to insert
         const OrdersToInsert = req.body;
 
-        if (!OrdersToInsert.full_name || !OrdersToInsert.phone_number || !OrdersToInsert.lessons) {
+        if (!OrdersToInsert.full_name || !OrdersToInsert.phone_number || !OrdersToInsert.lessons || !OrdersToInsert.availability) {
             return res.status(400).json({ message: "invalid order" });
         }
 
