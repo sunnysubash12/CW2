@@ -1,4 +1,5 @@
 const express = require("express");
+const fs = require('fs');
 const app = express();
 const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 const cors = require("cors");
@@ -64,7 +65,7 @@ const insertorders = async (req, res) => {
         // Assuming req.body contains the data you want to insert
         const OrdersToInsert = req.body;
 
-        if (!OrdersToInsert.full_name || !OrdersToInsert.phone_number || !OrdersToInsert.lessons || !OrdersToInsert.availability) {
+        if (!OrdersToInsert.full_name || !OrdersToInsert.phone_number || !OrdersToInsert.lessons || !OrdersToInsert.number_of_items) {
             return res.status(400).json({ message: "invalid order" });
         }
 
@@ -113,6 +114,22 @@ const putLessonAvailability = async (req, res) => {
     }
 };
 
+const imageMiddleware = (req, res, next) => {
+    // Assuming the image path is provided in the request URL
+    const imagePath = path.join(__dirname, '/images', req.params.imageName);
+  
+    // Check if the file exists
+    fs.access(imagePath, fs.constants.F_OK, (error) => {
+      if (error) {
+        // If the file does not exist, send a 404 response
+        res.status(404).send('Image not found');
+      } else {
+        // If the file exists, send the image as a response
+        res.sendFile(imagePath);
+      }
+    });
+  };
+
 app.use((req,res,next)=>{
     const { method, originalUrl, protocol } = req;
     const timestamp = new Date().toISOString();
@@ -123,6 +140,8 @@ app.use((req,res,next)=>{
 
 
 // Define your route for inserting a lesson
+// Use the imageMiddleware for a specific route
+app.get('/images/:imageName', imageMiddleware);
 app.post("/orders", insertorders);
 app.put("/lessons/:id",putLessonAvailability);
 app.get("/lessons", fetchLessons);
