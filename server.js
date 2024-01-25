@@ -117,6 +117,13 @@ const putLessonAvailability = async (req, res) => {
     }
 };
 
+app.use((req,res,next)=>{
+    const { method, originalUrl, protocol } = req;
+    const timestamp = new Date().toISOString();
+    console.log(`[${timestamp}] ${method} ${originalUrl} - ${protocol}://${req.get('host')}${req.originalUrl}]\n`); 
+});
+
+
 
 // Define your route for inserting a lesson
 app.post("/orders", insertorders);
