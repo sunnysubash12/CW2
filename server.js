@@ -116,7 +116,7 @@ const putLessonAvailability = async (req, res) => {
 
 const imageMiddleware = (req, res, next) => {
     // Assuming the image path is provided in the request URL
-    const imagePath = path.join(__dirname, '/images', req.params.imageName);
+    const imagePath = path.join(__dirname, '../images', req.params.imageName);
   
     // Check if the file exists
     fs.access(imagePath, fs.constants.F_OK, (error) => {
