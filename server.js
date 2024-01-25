@@ -93,6 +93,10 @@ const putLessonAvailability = async (req, res) => {
 
         const lessons_collection = db.collection(db_lesson_collection_name);
 
+        if (!availability.full_name) {
+            return res.status(400).json({ message: "invalid field" });
+        }
+
         const lesson_result = await lessons_collection.updateOne(
             {
                 _id: new ObjectId(lesson_id)
