@@ -24,8 +24,6 @@ const db_order_collection_name = "orders";
 
 const client = new MongoClient(uri, { serverApi: ServerApiVersion.v1 });
 
-
-
 const fetchLessons = async (req, res) => {
 
     await client.connect();
