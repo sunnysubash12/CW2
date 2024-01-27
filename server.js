@@ -104,7 +104,7 @@ const putLessonAvailability = async (req, res) => {
 
         if (lesson_result.matchedCount === 0) {
             res.status(404).json({ error: "lesson not found" });
-        }else{
+        } else {
             res.status(200).json({ message: "availability is updated" });
         }
     } catch (error) {
@@ -115,24 +115,24 @@ const putLessonAvailability = async (req, res) => {
 const imageMiddleware = (req, res, next) => {
     // Assuming the image path is provided in the request URL
     const imagePath = path.join(__dirname, './images', req.params.imageName);
-  
+
     // Check if the file exists
     fs.access(imagePath, fs.constants.F_OK, (error) => {
-      if (error) {
-        // If the file does not exist, send a 404 response
-        res.status(404).send('Image not found');
-      } else {
-        // If the file exists, send the image as a response
-        res.sendFile(imagePath);
-      }
+        if (error) {
+            // If the file does not exist, send a 404 response
+            res.status(404).send('Image not found');
+        } else {
+            // If the file exists, send the image as a response
+            res.sendFile(imagePath);
+        }
     });
-  };
+};
 
-app.use((req,res,next)=>{
+app.use((req, res, next) => {
     const { method, originalUrl, protocol } = req;
     const timestamp = new Date().toISOString();
     console.log(`[${timestamp}] ${method} ${originalUrl} - ${protocol}://${req.get('host')}${req.originalUrl}]\n`);
-    next(); 
+    next();
 });
 
 
@@ -141,7 +141,7 @@ app.use((req,res,next)=>{
 // Use the imageMiddleware for a specific route
 app.get('/images/:imageName', imageMiddleware);
 app.post("/orders", insertorders);
-app.put("/lessons/:id",putLessonAvailability);
+app.put("/lessons/:id", putLessonAvailability);
 app.get("/lessons", fetchLessons);
 app.get("/orders", fetchOrders);
 
