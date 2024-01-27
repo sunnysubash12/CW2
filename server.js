@@ -137,11 +137,11 @@ app.use((req, res, next) => {
 
 
 
-// Define your route for inserting a lesson
 // Use the imageMiddleware for a specific route
 app.get('/images/:imageName', imageMiddleware);
 app.post("/orders", insertorders);
 app.put("/lessons/:id", putLessonAvailability);
+// Define your route for getting a lesson
 app.get("/lessons", fetchLessons);
 app.get("/orders", fetchOrders);
 
